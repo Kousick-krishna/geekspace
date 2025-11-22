@@ -29,7 +29,7 @@ function Footer() {
             </a>
           </div>
           <p className="footer-contact">
-            <strong>Phone:</strong> +91 7305825218, 8248345160 <br />
+            <strong>Phone:</strong> +91 7305825218<br />
             <strong>Email:</strong> geekspace24by7@gmail.com
           </p>
           <p className="footer-text">

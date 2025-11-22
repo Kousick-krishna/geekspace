@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import AOS from 'aos';
-import { supabase } from '../supabaseClient'; 
 import '../styles/contact.css';
 
 function Contact() {
@@ -36,20 +35,17 @@ function Contact() {
     e.preventDefault();
 
     try {
-      // Insert form data into Supabase table
-      const { data, error } = await supabase
-        .from('Clients')  // Assuming the table is named 'contact_form'
-        .insert([
-          {
-            name: formData.name,
-            email: formData.email,
-            subject: formData.subject,
-            message: formData.message
-          }
-        ]);
+      const response = await fetch("http://localhost:5000/api/clients", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(formData)
+});
 
-      if (error) {
-        throw error;
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.error || "Failed to send message.");
       }
 
       setStatus({
@@ -57,13 +53,14 @@ function Contact() {
         message: 'Message sent successfully!',
       });
 
-      // Clear form after successful submission
+      // Reset form
       setFormData({
         name: '',
         email: '',
         subject: '',
         message: '',
       });
+
     } catch (error) {
       console.error("Error submitting contact form:", error);
 
@@ -89,7 +86,7 @@ function Contact() {
             <div className="contact-info">
               <h3 className="contact-info-heading">Contact Information</h3>
               <p>Email: geekspace24by7@gmail.com</p>
-              <p>Call: +91 8248345160, 7305825218</p>
+              <p>Call: +91 7305825218</p>
             </div>
           </div>
 
@@ -100,6 +97,7 @@ function Contact() {
                   {status.message}
                 </div>
               )}
+
               <div className="form-field">
                 <label className="label">Your Name</label>
                 <input
@@ -111,6 +109,7 @@ function Contact() {
                   className="input"
                 />
               </div>
+
               <div className="form-field">
                 <label className="label">Your Email</label>
                 <input
@@ -122,6 +121,7 @@ function Contact() {
                   className="input"
                 />
               </div>
+
               <div className="form-field">
                 <label className="label">Subject</label>
                 <input
@@ -133,6 +133,7 @@ function Contact() {
                   className="input"
                 />
               </div>
+
               <div className="form-field">
                 <label className="label">Message</label>
                 <textarea
@@ -144,12 +145,14 @@ function Contact() {
                   className="textarea"
                 ></textarea>
               </div>
+
               <button type="submit" className="submit-btn">
                 Send Message
               </button>
             </form>
           </div>
         </div>
+
       </div>
     </section>
   );
